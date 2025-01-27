@@ -1,0 +1,43 @@
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class AccountTest {
+
+    @Test
+    void testAccountDeposit() {
+        Account account = new Account();
+        account.put(100);
+        Assertions.assertEquals(100, account.getAmount(), "Balance should be 100 after deposit");
+    }
+
+    @Test
+    void testAccountWithdraw() {
+        Account account = new Account();
+        account.put(100);
+        account.withdraw(40);
+        Assertions.assertEquals(60, account.getAmount(), "Balance should be 60 after withdrawing 40 from 100");
+    }
+
+    @Test
+    void testCreditAccount() {
+        CreditAccount creditAccount = new CreditAccount();
+        creditAccount.put(200);
+        creditAccount.withdraw(50);
+        Assertions.assertEquals(200 - 50 * 1.01, creditAccount.getAmount(), 0.01, "Balance should consider 1.01 fee for withdrawals");
+    }
+
+    @Test
+    void testDepositAccount() {
+        DepositAccount depositAccount = new DepositAccount();
+        depositAccount.put(500);
+        Assertions.assertEquals(500, depositAccount.getAmount(), "Balance should be 500 after deposit");
+
+        // Test withdrawal rules (assuming restrictions, e.g., minimum duration or limited withdrawals)
+        boolean success = depositAccount.withdraw(100);
+        Assertions.assertFalse(success, "Withdrawal should fail if account has restrictions (e.g., lock period)");
+
+        // Test additional deposit
+        depositAccount.put(200);
+        Assertions.assertEquals(700, depositAccount.getAmount(), "Balance should be 700 after additional deposit of 200");
+    }
+}
